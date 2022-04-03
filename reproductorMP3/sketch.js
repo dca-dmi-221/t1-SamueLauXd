@@ -1,6 +1,6 @@
 let btnPlay, btnPausa, btnDetener, btnSiguiente, btnAnterior, btnAtras, btnAdelante;
 let cancion, cancionActual;
-let vol, volAct;
+let slider;
 let listaCanciones;
 
 function setup() {
@@ -64,6 +64,10 @@ function setup() {
   btnAdelante.position(683,573);
   btnAdelante.mousePressed(adelante);
 
+  slider = createSlider(0, 1, 0.5, 0.01);
+  slider.position(950, 530);
+  slider.style("transform","rotate(270deg)");
+
 }
 
 function draw() {
@@ -71,6 +75,7 @@ function draw() {
   image(img,0,0);
   selectorCancion();
   visualizadorTexto();
+  cancion.setVolume(slider.value())
 }
 
 function reproductor(){
@@ -86,7 +91,7 @@ function pausa(){
 }
 
 function detener(){
-  if (cancion.isPlaying()) {
+  if (cancion.isPlaying() || cancion.isPaused()) {
     cancion.stop();
   }
 }
@@ -105,11 +110,13 @@ function siguiente(){
 
 function anterior(){
   cancion.stop();
-  if (cancionActual > listaCanciones[0]) {
-    cancion = listaCanciones[cancionActual--].data;
-    cancionActual = cancionActual--;
-  } else{
-    
+  if (cancionActual > 1) {
+    cancion = listaCanciones[cancionActual-2].data;
+    cancionActual = cancionActual-1;
+  } else {
+    let totalCanciones = listaCanciones.length;
+    cancion = listaCanciones[totalCanciones-1].data;
+    cancionActual = totalCanciones;
   }
   cancion.play();
 }
@@ -131,15 +138,15 @@ function selectorCancion(){
     fill(255);
     textAlign(CENTER);
     textSize(18);
-    text(listaCanciones[i].name, 1160, (40*i)+160);    
+    text(listaCanciones[i].name, 1160, (40*i)+160);
   }
 }
 
 function visualizadorTexto(){
-  if (cancion.isPlaying()) {
+  if (cancion.isPlaying() || cancion.isPaused()) {
     fill(255);
     textAlign(CENTER);
     textSize(80);
-    text(listaCanciones[cancionActual-1].name, 650, 300);
+    text(listaCanciones[cancionActual-1].name, 640, 340);
   }
 }
